@@ -1,16 +1,33 @@
-# This is a sample Python script.
+import threading
+import socket
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+topics = ["/home/temperature", "/home/pressure", "/garden/humidity"]
 
 
-# Press the green button in the gutter to run the script.
+class Broker(threading.Thread):
+    def __init__(self, client, addr):
+        threading.Thread.__init__(self)
+        self.client = client
+        self.address = addr
+
+    def run(self):
+        while True:
+            pass
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    host = ""
+    port = 6767
+    server_socket.bind((host, port))
+
+    server_socket.listen(5)
+    print("Multithreaded Server started")
+
+    try:
+        while True:
+            client_socket, addr = server_socket.accept()
+            print(f"Accepted connection from {addr}")
+            client = Broker(client_socket, addr)
